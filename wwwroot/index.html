@@ -1,0 +1,13 @@
+<!doctype html>
+<html lang="kk"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>UniversityDbApp</title><style>
+body{margin:0;background:#f4f6fb;color:#17243b;font:16px system-ui}main{max-width:960px;margin:55px auto;padding:24px}h1{font-size:38px;margin-bottom:8px}p{color:#52617b}section{background:white;padding:25px;border-radius:18px;margin:24px 0;box-shadow:0 8px 35px #142d5210}table{width:100%;border-collapse:collapse}td,th{text-align:left;padding:14px 9px;border-bottom:1px solid #e6eaf2}th{color:#53627c}small{color:#4669c7}#status{padding:15px;border-radius:9px;background:#e5ecff}button{background:#315cdb;color:white;border:0;padding:12px 20px;border-radius:9px;cursor:pointer}
+</style><main><small>3-АПТА · ENTITY FRAMEWORK CORE</small><h1>UniversityDbApp</h1>
+<p>Кафедралар мен оқытушылар · Code-First · SQL Server</p><div id="status" role="status">Деректер жүктелуде…</div>
+<section><h2>Кафедралар</h2><table><thead><tr><th>ID</th><th>Атауы</th><th>Оқытушы саны</th></tr></thead><tbody id="departments"></tbody></table></section>
+<section><h2>Оқытушылар</h2><table><thead><tr><th>ID</th><th>Аты-жөні</th><th>Кафедра</th></tr></thead><tbody id="teachers"></tbody></table></section><button onclick="load()">Жаңарту</button>
+<p>Бір кафедрада бірнеше оқытушы болады. Teachers.DepartmentId → Departments.Id</p></main>
+<script>
+function rows(id,data,keys){const target=document.getElementById(id);target.replaceChildren();for(const item of data){const tr=document.createElement('tr');for(const key of keys){const td=document.createElement('td');td.textContent=item[key];tr.append(td);}target.append(tr);}}
+async function load(){const status=document.getElementById('status');status.textContent='Деректер жүктелуде…';try{const results=await Promise.all(['/api/departments','/api/teachers'].map(async url=>{const r=await fetch(url);if(!r.ok)throw new Error('HTTP '+r.status);return r.json();}));rows('departments',results[0],['id','name','teacherCount']);rows('teachers',results[1],['id','fullName','department']);status.textContent='SQL Server байланысы сәтті. Деректер дерекқордан оқылды.';}catch(e){status.textContent='Дерекқорға қосылу орындалмады. RUN.cmd немесе Update-Database орындап, қосылу жолын тексеріңіз.';}}
+load();</script></html>
